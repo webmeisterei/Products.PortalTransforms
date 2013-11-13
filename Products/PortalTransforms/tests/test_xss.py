@@ -1,13 +1,15 @@
 """
 """
+from zope.component import getUtility
 from Products.Archetypes.tests.atsitetestcase import ATSiteTestCase
+from Products.PortalTransforms.interfaces import IPortalTransformsTool
 
 
 class TestXSSFilter(ATSiteTestCase):
 
     def afterSetUp(self):
         ATSiteTestCase.afterSetUp(self)
-        self.engine = self.portal.portal_transforms
+        self.engine = getUtility(IPortalTransformsTool)
 
     def doTest(self, data_in, data_out):
         html = self.engine.convertTo('text/x-html-safe', data_in,

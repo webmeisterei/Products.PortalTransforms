@@ -67,6 +67,7 @@ class TransformTool(UniqueObject, ActionProviderBase, Folder):
         self._policies = policies or PersistentMapping()
         self.max_sec_in_cache = max_sec_in_cache
         self._new_style_pt = 1
+        initialize(self)
 
     # mimetype oriented conversions (iengine interface)
 

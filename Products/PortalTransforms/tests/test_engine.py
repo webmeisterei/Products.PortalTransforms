@@ -1,8 +1,10 @@
 from Products.Archetypes.tests.atsitetestcase import ATSiteTestCase
 
 from zope.interface import implements
+from zope.component import getUtility
 from Products.PortalTransforms.utils import TransformException
 from Products.PortalTransforms.interfaces import ITransform
+from Products.PortalTransforms.interfaces import IPortalTransformsTool
 from Products.PortalTransforms.chain import chain
 
 import urllib
@@ -116,7 +118,7 @@ class TestEngine(ATSiteTestCase):
 
     def afterSetUp(self):
         ATSiteTestCase.afterSetUp(self)
-        self.engine = self.portal.portal_transforms
+        self.engine = getUtility(IPortalTransformsTool)
         self.data = '<b>foo</b>'
 
     def register(self):
