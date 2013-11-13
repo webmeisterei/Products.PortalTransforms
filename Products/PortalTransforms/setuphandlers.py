@@ -8,7 +8,7 @@ from Products.CMFCore.utils import getToolByName
 
 def correctMapping(out, portal):
     pt = getToolByName(portal, 'portal_transforms')
-    pt_ids = pt.objectIds()
+    pt_ids = pt.transforms.keys()
 
     for m_in, m_out_dict in pt._mtmap.items():
         for m_out, transforms in m_out_dict.items():
@@ -32,8 +32,8 @@ def updateSafeHtml(out, portal):
     safe_html_id = 'safe_html'
     safe_html_module = "Products.PortalTransforms.transforms.safe_html"
     pt = getToolByName(portal, 'portal_transforms')
-    for id in pt.objectIds():
-        transform = getattr(pt, id)
+    for id in pt.transforms.keys():
+        transform = pt.transforms.get(id)
         if transform.id == safe_html_id and \
                 transform.module == safe_html_module:
             try:
@@ -43,7 +43,7 @@ def updateSafeHtml(out, portal):
                     transform.name(), transform.module)
                 try:
                     pt.unregisterTransform(id)
-                    pt.manage_addTransform(id, safe_html_module)
+                    pt.registerTransform(safe_html_module)
                 except:
                     raise
                 else:

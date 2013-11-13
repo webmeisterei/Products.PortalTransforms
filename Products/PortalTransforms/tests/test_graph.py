@@ -98,8 +98,10 @@ class TestGraph(ATSiteTestCase):
             empty transforms list
         """
         dummyMap = {'1': {'2': []}}
+        originalMap = self.engine._mtmap
         self.engine._mtmap = dummyMap
         self.engine._findPath('1', '2')
+        self.engine._mtmap = originalMap
 
     def testIdentity(self):
         orig = 'Some text'
