@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
-from zope.component import getUtility
 from Products.Archetypes.tests.atsitetestcase import ATSiteTestCase
-from Products.PortalTransforms.interfaces import IPortalTransformsTool
 
 
 class TransformTestCase(ATSiteTestCase):
 
     def afterSetUp(self):
         ATSiteTestCase.afterSetUp(self)
-        self.transforms = getUtility(IPortalTransformsTool)
+        self.transforms = self.portal.portal_transforms
 
 
 class TestIntelligentTextToHtml(TransformTestCase):

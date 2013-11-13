@@ -4,7 +4,6 @@
  <utilities>
   <utility
      interface="Products.PortalTransforms.interfaces.IPortalTransformsTool"
-     factory="Products.PortalTransforms.TransformEngine.TransformTool"
      object="portal_transforms"/>
  </utilities>
 </componentregistry>

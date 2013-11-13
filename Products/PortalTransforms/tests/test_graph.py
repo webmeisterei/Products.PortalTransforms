@@ -1,7 +1,4 @@
-from zope.component import getUtility
 from Products.Archetypes.tests.atsitetestcase import ATSiteTestCase
-from Products.PortalTransforms.interfaces import IPortalTransformsTool
-
 
 from utils import input_file_path
 FILE_PATH = input_file_path("demo1.pdf")
@@ -11,7 +8,7 @@ class TestGraph(ATSiteTestCase):
 
     def afterSetUp(self):
         ATSiteTestCase.afterSetUp(self)
-        self.engine = getUtility(IPortalTransformsTool)
+        self.engine = self.portal.portal_transforms
 
     def testGraph(self):
         data = open(FILE_PATH, 'r').read()

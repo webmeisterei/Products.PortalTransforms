@@ -1,7 +1,6 @@
 import os
 import logging
 import unittest
-from zope.component import getUtility
 from Products.Archetypes.tests.atsitetestcase import ATSiteTestCase
 from Products.CMFCore.utils import getToolByName
 
@@ -9,7 +8,6 @@ from utils import input_file_path, output_file_path, normalize_html,\
      load, matching_inputs
 from Products.PortalTransforms.data import datastream
 from Products.PortalTransforms.interfaces import IDataStream
-from Products.PortalTransforms.interfaces import IPortalTransformsTool
 
 from Products.PortalTransforms.libtransforms.utils import MissingBinary
 from Products.PortalTransforms.transforms.image_to_gif import image_to_gif
@@ -19,8 +17,11 @@ from Products.PortalTransforms.transforms.image_to_bmp import image_to_bmp
 from Products.PortalTransforms.transforms.image_to_tiff import image_to_tiff
 from Products.PortalTransforms.transforms.image_to_ppm  import image_to_ppm
 from Products.PortalTransforms.transforms.image_to_pcx  import image_to_pcx
+
 from Products.PortalTransforms.transforms.word_to_html import word_to_html
+
 from Products.PortalTransforms.transforms.safe_html  import SafeHTML
+
 from Products.PortalTransforms.transforms.textile_to_html import HAS_TEXTILE
 from Products.PortalTransforms.transforms.markdown_to_html import HAS_MARKDOWN
 
@@ -89,7 +90,7 @@ class TransformTest(ATSiteTestCase):
 class PILTransformsTest(ATSiteTestCase):
     def afterSetUp(self):
         ATSiteTestCase.afterSetUp(self)
-        self.pt = getUtility(IPortalTransformsTool)
+        self.pt = self.portal.portal_transforms
         self.mimetypes_registry = getToolByName(self.portal,
                                                 'mimetypes_registry')
 
@@ -163,7 +164,7 @@ class SafeHtmlTransformsTest(ATSiteTestCase):
 
     def afterSetUp(self):
         ATSiteTestCase.afterSetUp(self)
-        self.pt = getUtility(IPortalTransformsTool)
+        self.pt = self.portal.portal_transforms
         self.pt.registerTransform(SafeHTML())
 
     def beforeTearDown(self):
@@ -194,7 +195,7 @@ class WordTransformsTest(ATSiteTestCase):
 
     def afterSetUp(self):
         ATSiteTestCase.afterSetUp(self)
-        self.pt = getUtility(IPortalTransformsTool)
+        self.pt = self.portal.portal_transforms
         self.pt.registerTransform(word_to_html())
 
     def test_ignore_javascript_attrs(self):
