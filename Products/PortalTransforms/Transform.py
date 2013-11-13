@@ -3,18 +3,17 @@ from UserDict import UserDict
 
 from zope.interface import implements
 
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from App.class_init import InitializeClass
 from Persistence import PersistentMapping
+from Persistence import Persistent
 from persistent.list import PersistentList
-from OFS.SimpleItem import SimpleItem
 from AccessControl import ClassSecurityInfo
 
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
 
 from Products.PortalTransforms.interfaces import ITransform
-from Products.PortalTransforms.utils import TransformException, log, _www
+from Products.PortalTransforms.utils import TransformException, log
 from Products.PortalTransforms.transforms.broken import BrokenTransform
 
 
@@ -63,27 +62,12 @@ VALIDATORS = {
     }
 
 
-class Transform(SimpleItem):
+class Transform(Persistent):
     """A transform is an external method with
     additional configuration information
     """
 
     implements(ITransform)
-
-    meta_type = 'Transform'
-    meta_types = all_meta_types = ()
-
-    manage_options = (
-        ({'label': 'Configure',
-          'action': 'manage_main'},
-         {'label': 'Reload',
-          'action': 'manage_reloadTransform'},) +
-        SimpleItem.manage_options
-        )
-
-    manage_main = PageTemplateFile('configureTransform', _www)
-    manage_reloadTransform = PageTemplateFile('reloadTransform', _www)
-    tr_widgets = PageTemplateFile('tr_widgets', _www)
 
     security = ClassSecurityInfo()
     __allow_access_to_unprotected_subobjects__ = 1
@@ -98,6 +82,9 @@ class Transform(SimpleItem):
         self._config.__allow_access_to_unprotected_subobjects__ = 1
         self._config_metadata = UserDict()
         self._tr_init(1, transform)
+
+    def __repr__(self):
+        return '<Transform at %s>' % self.id
 
     def __setstate__(self, state):
         """ __setstate__ is called whenever the instance is loaded
@@ -174,14 +161,6 @@ class Transform(SimpleItem):
             self.title = ''
         self._v_transform = transform
         return transform
-
-    security.declarePrivate('manage_beforeDelete')
-    def manage_beforeDelete(self, item, container):
-        SimpleItem.manage_beforeDelete(self, item, container)
-        if self is item:
-            # unregister self from catalog on deletion
-            tr_tool = getToolByName(self, 'portal_transforms')
-            tr_tool._unmapTransform(self)
 
     security.declarePublic('get_documentation')
     def get_documentation(self):
