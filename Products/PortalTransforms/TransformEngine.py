@@ -7,7 +7,6 @@ from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
 from App.class_init import InitializeClass
 from Persistence import PersistentMapping
-from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import registerToolInterface
 from Products.CMFCore.utils import getToolByName
 
@@ -31,6 +30,7 @@ class TransformTool(object):
     security = ClassSecurityInfo()
 
     def __init__(self, policies=None, max_sec_in_cache=3600):
+        self.registry = getToolByName(self, 'mimetypes_registry')
         self.transforms = PersistentMapping()
         self._mtmap = PersistentMapping()
         self._policies = policies or PersistentMapping()
@@ -55,7 +55,6 @@ class TransformTool(object):
         if name not in self.transforms:
             self.transforms[name] = transform
             self._mapTransform(transform)
-
 
     security.declarePrivate('unregisterTransform')
     def unregisterTransform(self, name):
@@ -98,14 +97,12 @@ class TransformTool(object):
         if data is None:
             data = self._wrap(target_mimetype)
 
-        registry = getToolByName(self, 'mimetypes_registry')
-
-        if not getattr(aq_base(registry), 'classify', None):
+        if not getattr(aq_base(self.registry), 'classify', None):
             # avoid problems when importing a site with an old mimetype
             # registry
             return None
 
-        orig_mt = registry.classify(orig,
+        orig_mt = self.registry.classify(orig,
                                     mimetype=kwargs.get('mimetype'),
                                     filename=kwargs.get('filename'))
         orig_mt = str(orig_mt)
@@ -115,7 +112,7 @@ class TransformTool(object):
                 severity=DEBUG)
             return None
 
-        target_mt = registry.lookup(target_mimetype)
+        target_mt = self.registry.lookup(target_mimetype)
         if target_mt:
             target_mt = target_mt[0]
         else:
@@ -232,13 +229,12 @@ class TransformTool(object):
 
     def _mapTransform(self, transform):
         """map transform to internal structures"""
-        registry = getToolByName(self, 'mimetypes_registry')
         inputs = getattr(transform, 'inputs', None)
         if not inputs:
             raise TransformException('Bad transform %s : no input MIME type' %
                                      (transform))
         for i in inputs:
-            mts = registry.lookup(i)
+            mts = self.registry.lookup(i)
             if not mts:
                 msg = 'Input MIME type %r for transform %s is not registered '\
                       'in the MIME types registry' % (i, transform.name())
@@ -250,7 +246,7 @@ class TransformTool(object):
                     if not output:
                         msg = 'Bad transform %s : no output MIME type'
                         raise TransformException(msg % transform.name())
-                    mto = registry.lookup(output)
+                    mto = self.registry.lookup(output)
                     if not mto:
                         msg = 'Output MIME type %r for transform %s is not '\
                               'registered in the MIME types registry' % \
@@ -270,13 +266,12 @@ class TransformTool(object):
 
     def _unmapTransform(self, transform):
         """unmap transform from internal structures"""
-        registry = getToolByName(self, 'mimetypes_registry')
         for i in transform.inputs:
-            for mti in registry.lookup(i):
+            for mti in self.registry.lookup(i):
                 for mt in mti.mimetypes:
                     mt_in = self._mtmap.get(mt, {})
                     output = transform.output
-                    mto = registry.lookup(output)
+                    mto = self.registry.lookup(output)
                     for mt2 in mto[0].mimetypes:
                         l = mt_in[mt2]
                         for i in range(len(l)):
@@ -420,8 +415,7 @@ class TransformTool(object):
         if outputs is None:
             return result
 
-        registry = getToolByName(self, 'mimetypes_registry')
-        mto = registry.lookup(target)
+        mto = self.registry.lookup(target)
         # target mimetype aliases
         target_aliases = mto[0].mimetypes
 
@@ -479,8 +473,7 @@ class TransformTool(object):
     # Policy handling methods
     def addPolicy(self, output_mimetype, required_transforms):
         """ add a policy for a given output mime types"""
-        registry = getToolByName(self, 'mimetypes_registry')
-        if not registry.lookup(output_mimetype):
+        if not self.registry.lookup(output_mimetype):
             raise TransformException('Unknown MIME type')
         if output_mimetype in self._policies:
             msg = 'A policy for output %s is yet defined' % output_mimetype
@@ -523,4 +516,3 @@ class TransformTool(object):
 
 InitializeClass(TransformTool)
 registerToolInterface('portal_transforms', IPortalTransformsTool)
-
