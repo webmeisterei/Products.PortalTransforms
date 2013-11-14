@@ -55,9 +55,9 @@ def updateSafeHtml(out, portal):
 def installPortalTransforms(portal):
     out = StringIO()
 
-    updateSafeHtml(out, portal)
-
-    correctMapping(out, portal)
+    #updateSafeHtml(out, portal)
+    #correctMapping(out, portal)
+    print >> out, '...done'
 
 
 def setupPortalTransforms(context):

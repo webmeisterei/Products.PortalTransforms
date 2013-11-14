@@ -2,7 +2,6 @@ import os
 import logging
 import unittest
 from zope.component import getUtility
-from Products.Archetypes.tests.atsitetestcase import ATSiteTestCase
 from Products.CMFCore.utils import getToolByName
 
 from utils import input_file_path, output_file_path, normalize_html,\
@@ -25,12 +24,15 @@ from Products.PortalTransforms.transforms.textile_to_html import HAS_TEXTILE
 from Products.PortalTransforms.transforms.markdown_to_html import HAS_MARKDOWN
 
 from os.path import exists
+from Products.PloneTestCase import PloneTestCase
+PloneTestCase.setupPloneSite()
+
 # we have to set locale because lynx output is locale sensitive !
 os.environ['LC_ALL'] = 'C'
 logger = logging.getLogger('PortalTransforms')
 
 
-class TransformTest(ATSiteTestCase):
+class TransformTest(PloneTestCase.PloneTestCase):
 
     def do_convert(self, filename=None):
         if filename is None and exists(self.output + '.nofilename'):
@@ -86,9 +88,8 @@ class TransformTest(ATSiteTestCase):
         return self.transform.name()
 
 
-class PILTransformsTest(ATSiteTestCase):
+class PILTransformsTest(PloneTestCase.PloneTestCase):
     def afterSetUp(self):
-        ATSiteTestCase.afterSetUp(self)
         self.pt = getUtility(IPortalTransformsTool)
         self.mimetypes_registry = getToolByName(self.portal,
                                                 'mimetypes_registry')
@@ -159,10 +160,9 @@ class PILTransformsTest(ATSiteTestCase):
         self.assertEqual(data.getMetadata()['mimetype'], 'image/tiff')
 
 
-class SafeHtmlTransformsTest(ATSiteTestCase):
+class SafeHtmlTransformsTest(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
-        ATSiteTestCase.afterSetUp(self)
         self.pt = getUtility(IPortalTransformsTool)
         self.pt.registerTransform(SafeHTML())
 
@@ -190,10 +190,9 @@ class SafeHtmlTransformsTest(ATSiteTestCase):
         self.assertEqual(data.getData(), orig)
 
 
-class WordTransformsTest(ATSiteTestCase):
+class WordTransformsTest(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
-        ATSiteTestCase.afterSetUp(self)
         self.pt = getUtility(IPortalTransformsTool)
         self.pt.registerTransform(word_to_html())
 

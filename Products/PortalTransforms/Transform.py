@@ -2,9 +2,6 @@ from logging import ERROR
 from UserDict import UserDict
 
 from zope.interface import implements
-from zope.component import getUtility
-from plone.registry.interfaces import IRegistry
-
 from App.class_init import InitializeClass
 from Persistence import PersistentMapping
 from Persistence import Persistent
@@ -195,11 +192,6 @@ class Transform(Persistent):
     security.declareProtected(ManagePortal, 'get_parameter_value')
     def get_parameter_value(self, key):
         """ get value of a transform's parameter """
-        registry = getUtility(IRegistry)
-        # FIXME:
-        #keypath = 'Products.PortalTransforms.%s.%s' % (
-        #    self.id, key)
-        #return registry[keypath]
         value = self._config[key]
         type = self.get_parameter_infos(key)[0]
         if type == 'dict':

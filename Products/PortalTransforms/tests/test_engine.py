@@ -1,5 +1,4 @@
-from Products.Archetypes.tests.atsitetestcase import ATSiteTestCase
-
+from Products.PloneTestCase import PloneTestCase
 from zope.interface import implements
 from zope.component import getUtility
 from Products.PortalTransforms.utils import TransformException
@@ -9,6 +8,8 @@ from Products.PortalTransforms.chain import chain
 
 import urllib
 import re
+
+PloneTestCase.setupPloneSite()
 
 
 class BaseTransform:
@@ -114,10 +115,9 @@ class BadTransformWildcardOutput(BaseTransform):
     output = 'text/*'
 
 
-class TestEngine(ATSiteTestCase):
+class TestEngine(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
-        ATSiteTestCase.afterSetUp(self)
         self.engine = getUtility(IPortalTransformsTool)
         self.data = '<b>foo</b>'
 

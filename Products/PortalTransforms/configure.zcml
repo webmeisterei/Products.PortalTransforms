@@ -10,8 +10,6 @@
   <five:deprecatedManageAddDelete
       class=".Transform.Transform" />
 
-  <include package="plone.app.registry" />
-
   <genericsetup:registerProfile
       name="PortalTransforms"
       title="PortalTransforms"

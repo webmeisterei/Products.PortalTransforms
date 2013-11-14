@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from zope.component import getUtility
-from Products.Archetypes.tests.atsitetestcase import ATSiteTestCase
 from Products.PortalTransforms.interfaces import IPortalTransformsTool
+from Products.PloneTestCase import PloneTestCase
+PloneTestCase.setupPloneSite()
 
 
-class TransformTestCase(ATSiteTestCase):
+class TransformTestCase(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
-        ATSiteTestCase.afterSetUp(self)
         self.transforms = getUtility(IPortalTransformsTool)
 
 

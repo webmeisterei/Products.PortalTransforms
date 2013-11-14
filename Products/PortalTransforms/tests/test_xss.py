@@ -1,14 +1,14 @@
 """
 """
 from zope.component import getUtility
-from Products.Archetypes.tests.atsitetestcase import ATSiteTestCase
 from Products.PortalTransforms.interfaces import IPortalTransformsTool
+from Products.PloneTestCase import PloneTestCase
+PloneTestCase.setupPloneSite()
 
 
-class TestXSSFilter(ATSiteTestCase):
+class TestXSSFilter(PloneTestCase.PloneTestCase):
 
     def afterSetUp(self):
-        ATSiteTestCase.afterSetUp(self)
         self.engine = getUtility(IPortalTransformsTool)
 
     def doTest(self, data_in, data_out):
