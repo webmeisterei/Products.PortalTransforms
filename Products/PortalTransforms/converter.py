@@ -9,14 +9,15 @@ from Products.PortalTransforms.transforms import transforms
 
 
 type_map = dict(
-    string='plone.registry.field.ASCIILine',
+    string='plone.registry.field.TextLine',
     int='plone.registry.field.Int',
     list='plone.registry.field.List',
     dict='plone.registry.field.Dict',
 )
 
 field_map = dict(
-    valid_tags=('ASCIILine', 'Bool')
+    valid_tags=('TextLine', 'Bool'),
+    nasty_tags=('TextLine', 'Bool'),
 )
 
 if __name__ == '__main__':
@@ -40,17 +41,22 @@ if __name__ == '__main__':
             if fieldtype in ('dict'):
                 types = field_map.get(fieldid)
                 if not types:
-                    types = ('ASCIILine', 'ASCIILine')
+                    types = ('TextLine', 'TextLine')
                 FIELD = E.field(
                     dict(type=type_map.get(fieldtype)),
                     E.title(fieldlabel),
-                    E.key_type('plone.registry.field.%s' % types[0]),
-                    E.value_type('plone.registry.field.%s' % types[1]),
+                    E.description(fielddesc),
+                    E.key_type(
+                        dict(type='plone.registry.field.%s' % types[0])),
+                    E.value_type(
+                        dict(type='plone.registry.field.%s' % types[1])),
                 )
                 keys = fieldvals.keys()
                 keys.sort()
                 for key in keys:
                     value = fieldvals.get(key)
+                    if types[1] == 'Bool':
+                        value = value and 'True' or 'False'
                     VALUES.append(E.element(str(value), {'key': key}))
                 VALUES = tuple(VALUES)
                 records.append(E.record(
@@ -73,7 +79,8 @@ if __name__ == '__main__':
                 FIELD = E.field(
                     dict(type=type_map.get(fieldtype)),
                     E.title(fieldlabel),
-                    E.value_type('plone.registry.field.%s' % types[1]),
+                    E.value_type(
+                        dict(type='plone.registry.field.%s' % types[1])),
                 )
                 for val in fieldvals:
                     VALUES.append(E.element(str(val)))
