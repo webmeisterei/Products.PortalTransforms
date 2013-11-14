@@ -34,10 +34,10 @@ def make_config_persistent(kwargs):
     dictionary by persistent mapping.
     """
     for key, value in kwargs.items():
-        if type(value) == type({}):
+        if isinstance(value, dict):
             p_value = PersistentMapping(value)
             kwargs[key] = p_value
-        elif type(value) in (type(()), type([])):
+        elif isinstance(value, (tuple, list)):
             p_value = PersistentList(value)
             kwargs[key] = p_value
 
