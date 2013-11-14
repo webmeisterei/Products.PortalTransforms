@@ -3,8 +3,8 @@ import unittest
 
 
 modules = (
-    'Products.PortalTransforms.transforms.safe_html',
-    'Products.PortalTransforms.transforms.rest',
+#    'Products.PortalTransforms.transforms.safe_html',
+#    'Products.PortalTransforms.transforms.rest',
     )
 
 

@@ -1,4 +1,5 @@
 from Products.PortalTransforms.interfaces import ITransform
+from Products.PortalTransforms.utils import RegistryProxy
 from zope.interface import implements
 from DocumentTemplate.DT_Util import html_quote
 
@@ -13,12 +14,9 @@ class TextPreToHTML:
     output = "text/html"
 
     def __init__(self, name=None):
-        self.config_metadata = {
-            'inputs': ('list', 'Inputs',
-                       'Input(s) MIME type. Change with care.'),
-            }
         if name:
             self.__name__ = name
+        self.config = RegistryProxy(self.__name__)
 
     def name(self):
         return self.__name__

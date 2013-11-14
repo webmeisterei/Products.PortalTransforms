@@ -1,5 +1,4 @@
 from logging import ERROR
-from UserDict import UserDict
 
 from zope.interface import implements
 from App.class_init import InitializeClass
@@ -9,11 +8,12 @@ from persistent.list import PersistentList
 from AccessControl import ClassSecurityInfo
 
 from Products.CMFCore.permissions import ManagePortal
-from Products.CMFCore.utils import getToolByName
 
 from Products.PortalTransforms.interfaces import ITransform
 from Products.PortalTransforms.utils import TransformException, log
 from Products.PortalTransforms.transforms.broken import BrokenTransform
+from zope.component import getUtility
+from plone.registry.interfaces import IRegistry
 
 
 def import_from_name(module_name):
@@ -27,31 +27,6 @@ def import_from_name(module_name):
         raise ImportError(str(e))
     return m
 
-
-def make_config_persistent(kwargs):
-    """ iterates on the given dictionary and replace list by persistent list,
-    dictionary by persistent mapping.
-    """
-    for key, value in kwargs.items():
-        if isinstance(value, dict):
-            p_value = PersistentMapping(value)
-            kwargs[key] = p_value
-        elif isinstance(value, (tuple, list)):
-            p_value = PersistentList(value)
-            kwargs[key] = p_value
-
-
-def make_config_nonpersistent(kwargs):
-    """ iterates on the given dictionary and replace ListClass by python List,
-        and DictClass by python Dict
-    """
-    for key, value in kwargs.items():
-        if isinstance(value, PersistentMapping):
-            p_value = dict(value)
-            kwargs[key] = p_value
-        elif isinstance(value, PersistentList):
-            p_value = list(value)
-            kwargs[key] = p_value
 
 VALIDATORS = {
     'int': int,
@@ -77,9 +52,6 @@ class Transform(Persistent):
         # DM 2004-09-09: 'Transform' instances are stored as
         #  part of a module level configuration structure
         #  Therefore, they must not contain persistent objects
-        self._config = UserDict()
-        self._config.__allow_access_to_unprotected_subobjects__ = 1
-        self._config_metadata = UserDict()
         self._tr_init(1, transform)
 
     def __repr__(self):
@@ -115,19 +87,6 @@ class Transform(Persistent):
         if not hasattr(transform, 'output'):
             raise TransformException(
                 'Invalid transform : missing required "output" attribute')
-        # manage configuration
-        if set_conf and hasattr(transform, 'config'):
-            conf = dict(transform.config)
-            self._config.update(conf)
-            make_config_persistent(self._config)
-            if hasattr(transform, 'config_metadata'):
-                conf = dict(transform.config_metadata)
-                self._config_metadata.update(conf)
-                make_config_persistent(self._config_metadata)
-        transform.config = dict(self._config)
-        make_config_nonpersistent(transform.config)
-        transform.config_metadata = dict(self._config_metadata)
-        make_config_nonpersistent(transform.config_metadata)
 
         self.inputs = transform.inputs
         self.output = transform.output
@@ -180,77 +139,6 @@ class Transform(Persistent):
         """return the name of the transform instance"""
         return self.id
 
-    security.declareProtected(ManagePortal, 'get_parameters')
-    def get_parameters(self):
-        """ get transform's parameters names """
-        if not hasattr(self, '_v_transform'):
-            self._load_transform()
-        keys = self._v_transform.config.keys()
-        keys.sort()
-        return keys
-
-    security.declareProtected(ManagePortal, 'get_parameter_value')
-    def get_parameter_value(self, key):
-        """ get value of a transform's parameter """
-        value = self._config[key]
-        type = self.get_parameter_infos(key)[0]
-        if type == 'dict':
-            result = {}
-            for key, val in value.items():
-                result[key] = val
-        elif type == 'list':
-            result = list(value)
-        else:
-            result = value
-        return result
-
-    security.declareProtected(ManagePortal, 'get_parameter_infos')
-    def get_parameter_infos(self, key):
-        """ get informations about a parameter
-
-        return a tuple (type, label, description [, type specific data])
-        where type in (string, int, list, dict)
-              label and description are two string describing the field
-        there may be some additional elements specific to the type :
-             (key label, value label) for the dict type
-        """
-        try:
-            return tuple(self._config_metadata[key])
-        except KeyError:
-            return 'string', '', ''
-
-    security.declareProtected(ManagePortal, 'set_parameters')
-    def set_parameters(self, REQUEST=None, **kwargs):
-        """ set transform's parameters """
-        if not kwargs:
-            kwargs = REQUEST.form
-        self.preprocess_param(kwargs)
-        for param, value in kwargs.items():
-            try:
-                self.get_parameter_value(param)
-            except KeyError:
-                log('Warning: ignored parameter %r' % param)
-                continue
-            meta = self.get_parameter_infos(param)
-            self._config[param] = VALIDATORS[meta[0]](value)
-
-        tr_tool = getToolByName(self, 'portal_transforms')
-        # need to remap transform if necessary (i.e. configurable
-        # inputs / output)
-        if 'inputs' in kwargs or 'output' in kwargs:
-            tr_tool._unmapTransform(self)
-            if not hasattr(self, '_v_transform'):
-                self._load_transform()
-            self.inputs = kwargs.get('inputs', self._v_transform.inputs)
-            self.output = kwargs.get('output', self._v_transform.output)
-            tr_tool._mapTransform(self)
-        # track output encoding
-        if 'output_encoding' in kwargs:
-            self.output_encoding = kwargs['output_encoding']
-        if REQUEST is not None:
-            REQUEST['RESPONSE'].redirect(
-                tr_tool.absolute_url() + '/manage_main')
-
     security.declareProtected(ManagePortal, 'reload')
     def reload(self):
         """ reload the module where the transformation class is defined """
@@ -258,29 +146,5 @@ class Transform(Persistent):
         m = import_from_name(self.module)
         reload(m)
         self._tr_init()
-
-    def preprocess_param(self, kwargs):
-        """ preprocess param fetched from an http post to handle
-        optional dictionary
-        """
-        for param in self.get_parameters():
-            if self.get_parameter_infos(param)[0] == 'dict':
-                try:
-                    keys = kwargs[param + '_key']
-                    del kwargs[param + '_key']
-                except:
-                    keys = ()
-                try:
-                    values = kwargs[param + '_value']
-                    del kwargs[param + '_value']
-                except:
-                    values = ()
-                kwargs[param] = dict = {}
-                for key, value in zip(keys, values):
-                    key = key.strip()
-                    if key:
-                        value = value.strip()
-                        if value:
-                            dict[key] = value
 
 InitializeClass(Transform)

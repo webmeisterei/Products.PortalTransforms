@@ -1,4 +1,5 @@
 from Products.PortalTransforms.interfaces import ITransform
+from Products.PortalTransforms.utils import RegistryProxy
 from zope.interface import implements
 from DocumentTemplate.DT_Util import html_quote
 
@@ -10,17 +11,13 @@ class TextToHTML:
 
     __name__ = "text_to_html"
     output = "text/html"
+    inputs = ('text/plain',)
 
     def __init__(self, name=None, inputs=('text/plain',)):
-        self.config = {'inputs': inputs, }
-        self.config_metadata = {
-            'inputs': (
-                'list',
-                'Inputs',
-                'Input(s) MIME type. Change with care.'),
-            }
+        self.inputs = inputs
         if name:
             self.__name__ = name
+        self.config = RegistryProxy(self.__name__)
 
     def name(self):
         return self.__name__

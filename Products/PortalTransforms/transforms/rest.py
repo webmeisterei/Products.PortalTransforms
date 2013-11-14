@@ -1,4 +1,5 @@
 from Products.PortalTransforms.interfaces import ITransform
+from Products.PortalTransforms.utils import RegistryProxy
 from zope.interface import implements
 from reStructuredText import HTML
 
@@ -50,28 +51,7 @@ class rest:
     def __init__(self, name=None, **kwargs):
         if name:
             self.__name__ = name
-
-        self.config = {
-            'inputs': self.inputs,
-            'output': self.output,
-            'report_level': 2,
-            'initial_header_level': 2,
-            }
-
-        self.config_metadata = {
-            'inputs':
-                ('list', 'Inputs', 'Input(s) MIME type. Change with care.'),
-            'initial_header_level':
-                ('int', 'Initial Header Level',
-                 'Level of first header tag. Setting it to "2" will make '
-                 'the first header be "<h2>".'),
-            'report_level':
-                ('int', 'Report Level',
-                 'Level of error reporting. Set to "1" will display all '
-                 'messages. Setting it to "5" will display no messages.'),
-            }
-
-        self.config.update(kwargs)
+        self.config = RegistryProxy(self.__name__)
 
     def name(self):
         return self.__name__
