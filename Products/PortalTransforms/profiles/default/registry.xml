@@ -1,0 +1,257 @@
+<registry>
+  <record name="Products.PortalTransforms.rest_to_html.report_level">
+    <field type="plone.registry.field.Int">
+      <title>Report Level</title>
+    </field>
+    <value>2</value>
+  </record>
+  <record name="Products.PortalTransforms.rest_to_html.inputs">
+    <field type="plone.registry.field.List">
+      <title>Inputs</title>
+      <value_type>plone.registry.field.ASCIILine</value_type>
+    </field>
+    <value>
+      <element>text/x-rst</element>
+      <element>text/restructured</element>
+    </value>
+  </record>
+  <record name="Products.PortalTransforms.rest_to_html.initial_header_level">
+    <field type="plone.registry.field.Int">
+      <title>Initial Header Level</title>
+    </field>
+    <value>2</value>
+  </record>
+  <record name="Products.PortalTransforms.safe_html.inputs">
+    <field type="plone.registry.field.List">
+      <title>Inputs</title>
+      <value_type>plone.registry.field.ASCIILine</value_type>
+    </field>
+    <value>
+      <element>text/html</element>
+    </value>
+  </record>
+  <record name="Products.PortalTransforms.safe_html.disable_transform">
+    <field type="plone.registry.field.Int">
+      <title>disable_transform</title>
+    </field>
+    <value>0</value>
+  </record>
+  <record name="Products.PortalTransforms.safe_html.valid_tags">
+    <field type="plone.registry.field.Dict">
+      <title>valid_tags</title>
+      <key_type>plone.registry.field.ASCIILine</key_type>
+      <value_type>plone.registry.field.Bool</value_type>
+    </field>
+    <value>
+      <element key="a">1</element>
+      <element key="abbr">1</element>
+      <element key="acronym">1</element>
+      <element key="address">1</element>
+      <element key="area">0</element>
+      <element key="article">1</element>
+      <element key="aside">1</element>
+      <element key="audio">1</element>
+      <element key="b">1</element>
+      <element key="base">0</element>
+      <element key="bdo">1</element>
+      <element key="big">1</element>
+      <element key="blockquote">1</element>
+      <element key="body">1</element>
+      <element key="br">0</element>
+      <element key="canvas">1</element>
+      <element key="caption">1</element>
+      <element key="cite">1</element>
+      <element key="code">1</element>
+      <element key="col">1</element>
+      <element key="colgroup">1</element>
+      <element key="command">1</element>
+      <element key="datalist">1</element>
+      <element key="dd">1</element>
+      <element key="del">1</element>
+      <element key="details">1</element>
+      <element key="dfn">1</element>
+      <element key="dialog">1</element>
+      <element key="div">1</element>
+      <element key="dl">1</element>
+      <element key="dt">1</element>
+      <element key="em">1</element>
+      <element key="figure">1</element>
+      <element key="footer">1</element>
+      <element key="h1">1</element>
+      <element key="h2">1</element>
+      <element key="h3">1</element>
+      <element key="h4">1</element>
+      <element key="h5">1</element>
+      <element key="h6">1</element>
+      <element key="head">1</element>
+      <element key="header">1</element>
+      <element key="hgroup">1</element>
+      <element key="hr">0</element>
+      <element key="html">1</element>
+      <element key="i">1</element>
+      <element key="img">0</element>
+      <element key="ins">1</element>
+      <element key="kbd">1</element>
+      <element key="keygen">1</element>
+      <element key="li">1</element>
+      <element key="map">1</element>
+      <element key="mark">1</element>
+      <element key="meta">0</element>
+      <element key="meter">1</element>
+      <element key="nav">1</element>
+      <element key="ol">1</element>
+      <element key="output">1</element>
+      <element key="p">1</element>
+      <element key="pre">1</element>
+      <element key="progress">1</element>
+      <element key="q">1</element>
+      <element key="rp">1</element>
+      <element key="rt">1</element>
+      <element key="ruby">1</element>
+      <element key="samp">1</element>
+      <element key="section">1</element>
+      <element key="small">1</element>
+      <element key="source">1</element>
+      <element key="span">1</element>
+      <element key="strong">1</element>
+      <element key="sub">1</element>
+      <element key="sup">1</element>
+      <element key="table">1</element>
+      <element key="tbody">1</element>
+      <element key="td">1</element>
+      <element key="tfoot">1</element>
+      <element key="th">1</element>
+      <element key="thead">1</element>
+      <element key="time">1</element>
+      <element key="title">1</element>
+      <element key="tr">1</element>
+      <element key="tt">1</element>
+      <element key="u">1</element>
+      <element key="ul">1</element>
+      <element key="var">1</element>
+      <element key="video">1</element>
+    </value>
+  </record>
+  <record name="Products.PortalTransforms.safe_html.stripped_combinations">
+    <field type="plone.registry.field.Dict">
+      <title>stripped_combinations</title>
+      <key_type>plone.registry.field.ASCIILine</key_type>
+      <value_type>plone.registry.field.ASCIILine</value_type>
+    </field>
+    <value>
+      <element key="table th td">width height</element>
+    </value>
+  </record>
+  <record name="Products.PortalTransforms.safe_html.class_blacklist">
+    <field type="plone.registry.field.List">
+      <title>class_blacklist</title>
+      <value_type>plone.registry.field.ASCIILine</value_type>
+    </field>
+    <value/>
+  </record>
+  <record name="Products.PortalTransforms.safe_html.remove_javascript">
+    <field type="plone.registry.field.Int">
+      <title>remove_javascript</title>
+    </field>
+    <value>1</value>
+  </record>
+  <record name="Products.PortalTransforms.safe_html.stripped_attributes">
+    <field type="plone.registry.field.List">
+      <title>stripped_attributes</title>
+      <value_type>plone.registry.field.ASCIILine</value_type>
+    </field>
+    <value>
+      <element>lang</element>
+      <element>valign</element>
+      <element>halign</element>
+      <element>border</element>
+      <element>frame</element>
+      <element>rules</element>
+      <element>cellspacing</element>
+      <element>cellpadding</element>
+      <element>bgcolor</element>
+    </value>
+  </record>
+  <record name="Products.PortalTransforms.safe_html.style_whitelist">
+    <field type="plone.registry.field.List">
+      <title>style_whitelist</title>
+      <value_type>plone.registry.field.ASCIILine</value_type>
+    </field>
+    <value>
+      <element>text-align</element>
+      <element>list-style-type</element>
+      <element>float</element>
+      <element>padding-left</element>
+    </value>
+  </record>
+  <record name="Products.PortalTransforms.safe_html.nasty_tags">
+    <field type="plone.registry.field.Dict">
+      <title>nasty_tags</title>
+      <key_type>plone.registry.field.ASCIILine</key_type>
+      <value_type>plone.registry.field.ASCIILine</value_type>
+    </field>
+    <value>
+      <element key="applet">1</element>
+      <element key="embed">1</element>
+      <element key="meta">1</element>
+      <element key="object">1</element>
+      <element key="script">1</element>
+      <element key="style">1</element>
+    </value>
+  </record>
+  <record name="Products.PortalTransforms.text_to_html.inputs">
+    <field type="plone.registry.field.List">
+      <title>Inputs</title>
+      <value_type>plone.registry.field.ASCIILine</value_type>
+    </field>
+    <value>
+      <element>text/plain</element>
+    </value>
+  </record>
+  <record name="Products.PortalTransforms.rest_to_text.inputs">
+    <field type="plone.registry.field.List">
+      <title>Inputs</title>
+      <value_type>plone.registry.field.ASCIILine</value_type>
+    </field>
+    <value>
+      <element>text/x-rst</element>
+    </value>
+  </record>
+  <record name="Products.PortalTransforms.rest_to_text.output">
+    <field type="plone.registry.field.ASCIILine">
+      <title>Output</title>
+    </field>
+    <value>text/plain</value>
+  </record>
+  <record name="Products.PortalTransforms.web_intelligent_plain_text_to_html.inputs">
+    <field type="plone.registry.field.List">
+      <title>Inputs</title>
+      <value_type>plone.registry.field.ASCIILine</value_type>
+    </field>
+    <value>
+      <element>text/x-web-intelligent</element>
+    </value>
+  </record>
+  <record name="Products.PortalTransforms.web_intelligent_plain_text_to_html.tab_width">
+    <field type="plone.registry.field.ASCIILine">
+      <title>Tab width</title>
+    </field>
+    <value>4</value>
+  </record>
+  <record name="Products.PortalTransforms.html_to_web_intelligent_plain_text.inputs">
+    <field type="plone.registry.field.List">
+      <title>Inputs</title>
+      <value_type>plone.registry.field.ASCIILine</value_type>
+    </field>
+    <value>
+      <element>text/html</element>
+    </value>
+  </record>
+  <record name="Products.PortalTransforms.html_to_web_intelligent_plain_text.tab_width">
+    <field type="plone.registry.field.ASCIILine">
+      <title>Tab width</title>
+    </field>
+    <value>4</value>
+  </record>
+</registry>
+
