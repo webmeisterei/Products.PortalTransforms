@@ -6,13 +6,16 @@ Changelog
 
 New:
 
+- Use docutils for rest since the rest-wrapper was removed from zope2.
+  [pbauer]
+
 - Depend on ``Pillow>=3.1.0``.
   [jensens]
 
 Fixes:
 
 - Fix: After using ``Pillow>=3.1.0`` fix TIFF test output for this new
-  version of Pillow writing a ``dword`` instead of a ``word`` as type in 
+  version of Pillow writing a ``dword`` instead of a ``word`` as type in
   the IFD header for the width.
   [jensens]
 
